@@ -26,8 +26,6 @@ public class UCMCore {
         UCMCore.init();
         var bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.register(this);
-        // MinecraftForge.EVENT_BUS.register(this);
-        // ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 
     public static void init() {
