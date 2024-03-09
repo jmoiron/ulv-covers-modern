@@ -1,4 +1,4 @@
-package com.jmoiron.ulvcovm.covers;
+package com.jmoiron.ulvcovm.data.covers;
 
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
@@ -44,7 +44,7 @@ public class CoverItems {
             })))
             .register();
     
-    public static ItemEntry<ComponentItem> ROBOT_ARM_LV = UCMRegistries.REGISTRATE.item("ulv_robot_arm", ComponentItem::create)
+    public static ItemEntry<ComponentItem> ROBOT_ARM_ULV = UCMRegistries.REGISTRATE.item("ulv_robot_arm", ComponentItem::create)
             .lang("ULV Robot Arm")
             .onRegister(attach(new CoverPlaceBehavior(Covers.ULV_ROBOT_ARM.definition)))
             .onRegister(attach(new TooltipBehavior(lines -> {

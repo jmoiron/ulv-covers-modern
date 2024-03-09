@@ -1,11 +1,16 @@
 package com.jmoiron.ulvcovm;
 
+import java.util.function.Consumer;
+
 import com.gregtechceu.gtceu.api.addon.GTAddon;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-import com.jmoiron.ulvcovm.covers.Covers;
+import com.jmoiron.ulvcovm.data.covers.Covers;
+import com.jmoiron.ulvcovm.data.items.UCMRecipes;
 import com.jmoiron.ulvcovm.registry.UCMRegistries;
+
+import net.minecraft.data.recipes.FinishedRecipe;
 
 @GTAddon
 public class UCMCoreAddon implements IGTAddon {
@@ -22,6 +27,11 @@ public class UCMCoreAddon implements IGTAddon {
     @Override
     public String addonModId() {
         return UCMCore.MOD_ID;
+    }
+
+    @Override
+    public void addRecipes(Consumer<FinishedRecipe> provider) {
+        UCMRecipes.init(provider);
     }
     
     @Override

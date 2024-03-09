@@ -1,4 +1,4 @@
-package com.jmoiron.ulvcovm.covers;
+package com.jmoiron.ulvcovm.data.covers;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.jmoiron.ulvcovm.covers;
+package com.jmoiron.ulvcovm.data.covers;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
