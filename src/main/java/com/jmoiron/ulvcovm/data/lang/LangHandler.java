@@ -1,4 +1,4 @@
-package com.jmoiron.qscore.data.lang;
+package com.jmoiron.ulvcovm.data.lang;
 
 import java.util.Set;
 
@@ -20,9 +20,5 @@ public class LangHandler extends com.gregtechceu.gtceu.data.lang.LangHandler {
             provider.add(material.getUnlocalizedName(), FormattingUtil.toEnglishName(material.getName()));
         }
 
-        /*
-        multilineLang(provider, "item.qscore.ulv_conveyor_module", "ULV Conveyor Module");
-        multilineLang(provider, "item.qscore.ulv_electric_pump", "ULV Electric Pump");
-        */
     }
 }

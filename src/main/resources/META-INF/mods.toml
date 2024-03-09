@@ -8,19 +8,19 @@ issueTrackerURL="https://github.com/jmoiron/quantum-skies/issues" #optional
 # A list of mods - how many allowed here is determined by the individual mod loader
 [[mods]] #mandatory
 # The modid of the mod
-modId="qscore" #mandatory
+modId="ulvcovm" #mandatory
 # The version number of the mod
 #version="${version}" #mandatory
 version="0.1"
 # A display name for the mod
-displayName="Quantum Skies Coremod" #mandatory
+displayName="ULV Covers Modern" #mandatory
 
 # A URL to query for updates for this mod. See the JSON update specification https://docs.minecraftforge.net/en/latest/misc/updatechecker/
 #updateJSONURL="https://change.me.example.invalid/updates.json" #optional
 # A URL for the "homepage" for this mod, displayed in the mod UI
 #displayURL="https://change.me.to.your.mods.homepage.example.invalid/" #optional
 # A file name (in the root of the mod JAR) containing a logo for display
-#logoFile="qscore.png" #optional
+#logoFile="ulvcovm.png" #optional
 # A text field displayed in the mod UI
 #credits="" #optional
 # A text field displayed in the mod UI
@@ -37,7 +37,7 @@ authors="jmoiron" #optional
 description='''Quantum Skies Coremod Additions'''
 
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
-[[dependencies.qscore]] #optional
+[[dependencies.ulvcovm]] #optional
     modId="forge" #mandatory
     mandatory=true #mandatory
     # The version range of the dependency
@@ -50,7 +50,7 @@ description='''Quantum Skies Coremod Additions'''
     side="BOTH"
 
 # Here's another dependency
-[[dependencies.qscore]]
+[[dependencies.ulvcovm]]
     modId="minecraft"
     mandatory=true
     # This version range declares a minimum of the current minecraft version up to but not including the next major version
@@ -58,7 +58,7 @@ description='''Quantum Skies Coremod Additions'''
     ordering="NONE"
     side="BOTH"
 
-[[dependencies.qscore]]
+[[dependencies.ulvcovm]]
     modId = "gtceu"
     mandatory = true
     versionRange = "[1.0.16,)"

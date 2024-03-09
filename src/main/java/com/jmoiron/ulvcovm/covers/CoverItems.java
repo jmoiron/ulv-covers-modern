@@ -1,11 +1,11 @@
-package com.jmoiron.qscore.covers;
+package com.jmoiron.ulvcovm.covers;
 
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.common.item.TooltipBehavior;
-import com.jmoiron.qscore.registry.QSCreativeModeTabs;
-import com.jmoiron.qscore.registry.QSRegistries;
+import com.jmoiron.ulvcovm.registry.UCMCreativeModeTabs;
+import com.jmoiron.ulvcovm.registry.UCMRegistries;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 
@@ -14,10 +14,10 @@ import net.minecraft.network.chat.Component;
 @SuppressWarnings("null")
 public class CoverItems {
     static {
-        QSRegistries.REGISTRATE.creativeModeTab(() -> QSCreativeModeTabs.ITEM);
+        UCMRegistries.REGISTRATE.creativeModeTab(() -> UCMCreativeModeTabs.ITEM);
     }
 
-    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_ULV = QSRegistries.REGISTRATE.item("ulv_electric_pump", ComponentItem::create)
+    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_ULV = UCMRegistries.REGISTRATE.item("ulv_electric_pump", ComponentItem::create)
             .lang("ULV Electric Pump")
             .onRegister(attach(new CoverPlaceBehavior(Covers.ULV_PUMP.definition)))
             .onRegister(attach(new TooltipBehavior(lines -> {
@@ -26,7 +26,7 @@ public class CoverItems {
             })))
             .register();
     
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_ULV = QSRegistries.REGISTRATE.item("ulv_conveyor_module", ComponentItem::create)
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_ULV = UCMRegistries.REGISTRATE.item("ulv_conveyor_module", ComponentItem::create)
             .lang("ULV Conveyor Module")
             .onRegister(attach(new CoverPlaceBehavior(Covers.ULV_CONVEYOR.definition)))
             .onRegister(attach(new TooltipBehavior(lines -> {
@@ -35,7 +35,7 @@ public class CoverItems {
             })))
             .register();
 
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_ULV = QSRegistries.REGISTRATE.item("ulv_fluid_regulator", ComponentItem::create)
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_ULV = UCMRegistries.REGISTRATE.item("ulv_fluid_regulator", ComponentItem::create)
             .lang("ULV Fluid Regulator")
             .onRegister(attach(new CoverPlaceBehavior(Covers.ULV_FLUID_REGULATOR.definition)))
             .onRegister(attach(new TooltipBehavior(lines -> {
@@ -44,7 +44,7 @@ public class CoverItems {
             })))
             .register();
     
-    public static ItemEntry<ComponentItem> ROBOT_ARM_LV = QSRegistries.REGISTRATE.item("ulv_robot_arm", ComponentItem::create)
+    public static ItemEntry<ComponentItem> ROBOT_ARM_LV = UCMRegistries.REGISTRATE.item("ulv_robot_arm", ComponentItem::create)
             .lang("ULV Robot Arm")
             .onRegister(attach(new CoverPlaceBehavior(Covers.ULV_ROBOT_ARM.definition)))
             .onRegister(attach(new TooltipBehavior(lines -> {

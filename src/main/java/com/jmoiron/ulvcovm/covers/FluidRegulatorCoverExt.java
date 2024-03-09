@@ -1,4 +1,4 @@
-package com.jmoiron.qscore.covers;
+package com.jmoiron.ulvcovm.covers;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;

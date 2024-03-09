@@ -1,16 +1,16 @@
-package com.jmoiron.qscore.registry;
+package com.jmoiron.ulvcovm.registry;
 
 import com.gregtechceu.gtceu.common.data.GTCreativeModeTabs;
-import com.jmoiron.qscore.QSCore;
-import com.jmoiron.qscore.covers.CoverItems;
+import com.jmoiron.ulvcovm.UCMCore;
+import com.jmoiron.ulvcovm.covers.CoverItems;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 
-public class QSCreativeModeTabs {
+public class UCMCreativeModeTabs {
     @SuppressWarnings("null")
-    public static RegistryEntry<CreativeModeTab> ITEM = QSRegistries.REGISTRATE.defaultCreativeTab(QSCore.MOD_ID,
-            builder -> builder.displayItems(new GTCreativeModeTabs.RegistrateDisplayItemsGenerator(QSCore.MOD_ID, QSRegistries.REGISTRATE))
+    public static RegistryEntry<CreativeModeTab> ITEM = UCMRegistries.REGISTRATE.defaultCreativeTab(UCMCore.MOD_ID,
+            builder -> builder.displayItems(new GTCreativeModeTabs.RegistrateDisplayItemsGenerator(UCMCore.MOD_ID, UCMRegistries.REGISTRATE))
                     .icon(CoverItems.ELECTRIC_PUMP_ULV::asStack)
                     .title(Component.literal("Quantum Skies Core"))
                     .build())

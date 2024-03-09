@@ -1,18 +1,18 @@
-package com.jmoiron.qscore;
+package com.jmoiron.ulvcovm;
 
 import com.gregtechceu.gtceu.api.addon.GTAddon;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-import com.jmoiron.qscore.covers.Covers;
-import com.jmoiron.qscore.registry.QSRegistries;
+import com.jmoiron.ulvcovm.covers.Covers;
+import com.jmoiron.ulvcovm.registry.UCMRegistries;
 
 @GTAddon
-public class QSCoreAddon implements IGTAddon {
+public class UCMCoreAddon implements IGTAddon {
 
     @Override
     public GTRegistrate getRegistrate() {
-        return QSRegistries.REGISTRATE;
+        return UCMRegistries.REGISTRATE;
     }
 
     @Override
@@ -21,7 +21,7 @@ public class QSCoreAddon implements IGTAddon {
 
     @Override
     public String addonModId() {
-        return QSCore.MOD_ID;
+        return UCMCore.MOD_ID;
     }
     
     @Override

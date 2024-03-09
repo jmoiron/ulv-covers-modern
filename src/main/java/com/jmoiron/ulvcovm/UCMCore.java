@@ -1,11 +1,11 @@
-package com.jmoiron.qscore;
+package com.jmoiron.ulvcovm;
 
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.jmoiron.qscore.covers.CoverItems;
-import com.jmoiron.qscore.data.QSDatagen;
-import com.jmoiron.qscore.registry.QSCreativeModeTabs;
-import com.jmoiron.qscore.registry.QSRegistries;
+import com.jmoiron.ulvcovm.covers.CoverItems;
+import com.jmoiron.ulvcovm.data.UCMDatagen;
+import com.jmoiron.ulvcovm.registry.UCMCreativeModeTabs;
+import com.jmoiron.ulvcovm.registry.UCMRegistries;
 import com.mojang.logging.LogUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -15,15 +15,15 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
 // The value here should match an entry in the META-INF/mods.toml file
-@Mod(QSCore.MOD_ID)
-public class QSCore {
-    public static final String MOD_ID = "qscore";
+@Mod(UCMCore.MOD_ID)
+public class UCMCore {
+    public static final String MOD_ID = "ulvcovm";
 
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public QSCore()
+    public UCMCore()
     {
-        QSCore.init();
+        UCMCore.init();
         var bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.register(this);
         // MinecraftForge.EVENT_BUS.register(this);
@@ -35,10 +35,10 @@ public class QSCore {
 
         LOGGER.info("initializing quantum skies coremod");
         CoverItems.init();
-        QSCreativeModeTabs.init();
-        QSDatagen.init();
+        UCMCreativeModeTabs.init();
+        UCMDatagen.init();
 
-        QSRegistries.REGISTRATE.registerRegistrate();
+        UCMRegistries.REGISTRATE.registerRegistrate();
     }
 
     public static ResourceLocation id(String name) {

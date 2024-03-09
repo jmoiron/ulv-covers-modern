@@ -1,10 +1,10 @@
-package com.jmoiron.qscore.covers;
+package com.jmoiron.ulvcovm.covers;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.cover.*;
-import com.jmoiron.qscore.QSCore;
+import com.jmoiron.ulvcovm.UCMCore;
 import com.gregtechceu.gtceu.client.renderer.cover.*;
 
 import net.minecraft.resources.ResourceLocation;
@@ -16,7 +16,7 @@ public class Covers {
         public CoverDefinition definition;
     
         CoverInfo(String id, CoverDefinition.TieredCoverBehaviourProvider behavior, ICoverRenderer renderer) {
-            this.id = QSCore.id(id);
+            this.id = UCMCore.id(id);
             this.definition = register(id, behavior, renderer);
         }
     };
@@ -53,7 +53,7 @@ public class Covers {
             CoverDefinition.TieredCoverBehaviourProvider behavior, 
             ICoverRenderer renderer
         ) {
-        var definition = new CoverDefinition(QSCore.id(id), 
+        var definition = new CoverDefinition(UCMCore.id(id), 
             (def, coverable, side) -> behavior.create(def, coverable, side, GTValues.ULV), 
             renderer);
 
