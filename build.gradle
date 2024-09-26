@@ -30,7 +30,7 @@ loom {
     forge {
         // specify the mixin configs used in this mod
         // this will be added to the jar manifest as well!
-        
+
         //mixinConfigs = [
         //        "${modId}.mixins.json"
         //]
@@ -64,6 +64,13 @@ sourceSets {
 
 repositories {
     mavenCentral()
+    maven {
+        name = 'GTCEu Maven'
+        url = 'https://maven.gtceu.com'
+        content {
+            includeGroup 'com.gregtechceu.gtceu'
+        }
+    }
     maven {
         name 'FirstDarkDev'
         url "https://maven.firstdarkdev.xyz/snapshots/"
