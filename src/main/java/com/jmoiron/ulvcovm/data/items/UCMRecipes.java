@@ -13,33 +13,32 @@ import com.jmoiron.ulvcovm.UCMCore;
 import com.jmoiron.ulvcovm.data.covers.CoverItems;
 
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent.Finish;
 
 public class UCMRecipes {
     public static void init(Consumer<FinishedRecipe> provider) {
-        if (Config.easyRecipes) { 
-            initEasy(provider); 
-        } else { 
-            initNormal(provider); 
+        if (Config.easyRecipes) {
+            initEasy(provider);
+        } else {
+            initNormal(provider);
         }
 
         initCovers(provider);
     }
-    
+
     public static void initEasy(Consumer<FinishedRecipe> provider) {
         VanillaRecipeHelper.addShapedRecipe(provider,  UCMCore.id("ulv_electric_motor"), UCMComponents.ULV_ELECTRIC_MOTOR.asStack(),
             "CR ",
             "MC ",
-            "   ", 
+            "   ",
             'C', new UnificationEntry(wireGtSingle, Tin),
             'R', new UnificationEntry(rod, Copper),
             'M', new UnificationEntry(rod, IronMagnetic)
         );
-        
+
         VanillaRecipeHelper.addShapedRecipe(provider, UCMCore.id("ulv_electric_piston"), UCMComponents.ULV_ELECTRIC_PISTON.asStack(),
             "PR ",
             "MG ",
-            "   ", 
+            "   ",
             'P', new UnificationEntry(plate, Copper),
             'R', new UnificationEntry(rod, Copper),
             'M', UCMComponents.ULV_ELECTRIC_MOTOR.asStack(),
@@ -52,17 +51,17 @@ public class UCMRecipes {
         VanillaRecipeHelper.addShapedRecipe(provider, UCMCore.id("ulv_electric_motor"), UCMComponents.ULV_ELECTRIC_MOTOR.asStack(),
             "CWR",
             "WMW",
-            "RWC", 
+            "RWC",
             'C', new UnificationEntry(cableGtSingle, Lead),
             'W', new UnificationEntry(wireGtSingle, Tin),
             'R', new UnificationEntry(rod, Copper),
             'M', new UnificationEntry(rod, IronMagnetic)
         );
-        
+
         VanillaRecipeHelper.addShapedRecipe(provider, UCMCore.id("ulv_electric_piston"), UCMComponents.ULV_ELECTRIC_PISTON.asStack(),
             "PPP",
             "CRR",
-            "CMG", 
+            "CMG",
             'P', new UnificationEntry(plate, Copper),
             'C', new UnificationEntry(cableGtSingle, Lead),
             'R', new UnificationEntry(rod, Copper),
@@ -70,7 +69,7 @@ public class UCMRecipes {
             'G', new UnificationEntry(gearSmall, Copper)
         );
     }
-    
+
     public static void initCovers(Consumer<FinishedRecipe> provider) {
         VanillaRecipeHelper.addShapedRecipe(provider, UCMCore.id("ulv_electric_conveyor"), CoverItems.CONVEYOR_MODULE_ULV.asStack(),
             "RRR",
@@ -87,7 +86,7 @@ public class UCMRecipes {
             "RMC",
             'S', new UnificationEntry(screw, Copper),
             'R', new UnificationEntry(ring, Rubber),
-            'F', new UnificationEntry(rotor, Copper), 
+            'F', new UnificationEntry(rotor, Copper),
             'P', new UnificationEntry(pipeNormalFluid, Copper),
             'M', UCMComponents.ULV_ELECTRIC_MOTOR.asStack(),
             'C', new UnificationEntry(cableGtSingle, Lead)
@@ -110,7 +109,7 @@ public class UCMRecipes {
             "RMC",
             'S', new UnificationEntry(screw, Copper),
             'R', GTItems.VACUUM_TUBE.asStack(),
-            'F', new UnificationEntry(rotor, Copper), 
+            'F', new UnificationEntry(rotor, Copper),
             'P', CoverItems.ELECTRIC_PUMP_ULV.asStack(),
             'M', UCMComponents.ULV_ELECTRIC_MOTOR.asStack(),
             'C', new UnificationEntry(cableGtSingle, Lead)
