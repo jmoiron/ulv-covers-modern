@@ -11,7 +11,7 @@ issueTrackerURL="https://github.com/jmoiron/ulv-covers-modern/issues" #optional
 modId="ulvcovm" #mandatory
 # The version number of the mod
 #version="${version}" #mandatory
-version="0.1.3"
+version="0.2.0"
 # A display name for the mod
 displayName="ULV Covers Modern" #mandatory
 logoFile="ulvcovm-64.png" #optional

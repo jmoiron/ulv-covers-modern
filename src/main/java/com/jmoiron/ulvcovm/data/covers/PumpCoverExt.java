@@ -20,27 +20,25 @@ import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
-import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
+import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
-import com.gregtechceu.gtceu.api.transfer.fluid.FluidTransferDelegate;
+import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerDelegate;
+import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
+import com.gregtechceu.gtceu.api.transfer.fluid.ModifiableFluidHandlerWrapper;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.utils.FluidStackHashStrategy;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
-import it.unimi.dsi.fastutil.objects.Object2LongOpenCustomHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -48,34 +46,39 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class PumpCoverExt extends CoverBehavior implements IUICover, IControllable {
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PumpCoverExt.class, CoverBehavior.MANAGED_FIELD_HOLDER);
 
-    protected static final long MILLIBUCKET_SIZE = FluidHelper.getBucket() / 1000;
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PumpCoverExt.class,
+        CoverBehavior.MANAGED_FIELD_HOLDER);
 
     public final int tier;
-    public final long maxMilliBucketsPerTick;
+    public final int maxMilliBucketsPerTick;
 
     @Persisted @DescSynced @Getter
-    protected long currentMilliBucketsPerTick;
+    protected int currentMilliBucketsPerTick;
+
     @Persisted @DescSynced @Getter @RequireRerender
     protected IO io = IO.OUT;
+
     @Persisted @DescSynced @Getter
     protected BucketMode bucketMode = BucketMode.MILLI_BUCKET;
+
     @Persisted @DescSynced @Getter
     protected ManualIOMode manualIOMode = ManualIOMode.DISABLED;
 
     @Persisted @Getter
     protected boolean isWorkingEnabled = true;
-    protected long milliBucketsLeftToTransferLastSecond;
+    protected int milliBucketsLeftToTransferLastSecond;
 
     @Persisted @DescSynced
     protected final FilterHandler<FluidStack, FluidFilter> filterHandler;
     protected final ConditionalSubscriptionHandler subscriptionHandler;
-    private NumberInputWidget<Long> transferRateWidget;
+    private NumberInputWidget<Integer> transferRateWidget;
 
     /*
      * Transfer rate variables are treated as liters/millibuckets per tick.
@@ -88,8 +91,8 @@ public class PumpCoverExt extends CoverBehavior implements IUICover, IControllab
 
         // do not set transfer rate per tick lower than 32mb/t
         this.maxMilliBucketsPerTick = Math.max(
-            (long)32,
-            64 * (long) Math.pow(4, Math.min(tier - 1, GTValues.IV))
+            (int)32,
+            64 * (int) Math.pow(4, Math.min(tier - 1, GTValues.IV))
         );
 
         this.currentMilliBucketsPerTick = maxMilliBucketsPerTick;
@@ -103,20 +106,21 @@ public class PumpCoverExt extends CoverBehavior implements IUICover, IControllab
     }
 
     protected boolean isSubscriptionActive() {
-        return isWorkingEnabled() && getAdjacentFluidTransfer() != null;
+        return isWorkingEnabled() && getAdjacentFluidHandler() != null;
     }
 
-    protected @Nullable IFluidTransfer getOwnFluidTransfer() {
-        return FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
+    protected @Nullable IFluidHandlerModifiable getOwnFluidHandler() {
+        return coverHolder.getFluidHandlerCap(attachedSide, false);
     }
 
-    protected @Nullable IFluidTransfer getAdjacentFluidTransfer() {
-        return FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getPos().relative(attachedSide), attachedSide.getOpposite());
+    protected @Nullable IFluidHandler getAdjacentFluidHandler() {
+        return GTTransferUtils.getAdjacentFluidHandler(coverHolder.getLevel(), coverHolder.getPos(), attachedSide)
+                .resolve()
+                .orElse(null);
     }
 
-    //////////////////////////////////////
-    //*****     Initialization    ******//
-    //////////////////////////////////////
+    // Initialization
+
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
@@ -124,7 +128,7 @@ public class PumpCoverExt extends CoverBehavior implements IUICover, IControllab
 
     @Override
     public boolean canAttach() {
-        return getOwnFluidTransfer() != null;
+        return getOwnFluidHandler() != null;
     }
 
     public void setIo(IO io) {
@@ -167,12 +171,10 @@ public class PumpCoverExt extends CoverBehavior implements IUICover, IControllab
         }
     }
 
-    //////////////////////////////////////
-    //*****     Transfer Logic     *****//
-    //////////////////////////////////////
+    // Transfer Logic
 
 
-    public void setTransferRate(long milliBucketsPerTick) {
+    public void setTransferRate(int milliBucketsPerTick) {
         this.currentMilliBucketsPerTick = Math.min(Math.max(milliBucketsPerTick, 0), maxMilliBucketsPerTick);
     }
 
@@ -207,8 +209,8 @@ public class PumpCoverExt extends CoverBehavior implements IUICover, IControllab
             return;
 
         if (milliBucketsLeftToTransferLastSecond > 0) {
-            long platformTransferredFluid = doTransferFluids(milliBucketsLeftToTransferLastSecond * MILLIBUCKET_SIZE);
-            this.milliBucketsLeftToTransferLastSecond -= platformTransferredFluid / MILLIBUCKET_SIZE;
+            int platformTransferredFluid = doTransferFluids(milliBucketsLeftToTransferLastSecond);
+            this.milliBucketsLeftToTransferLastSecond -= platformTransferredFluid;
         }
 
         if (timer % 20 == 0) {
@@ -218,27 +220,28 @@ public class PumpCoverExt extends CoverBehavior implements IUICover, IControllab
         subscriptionHandler.updateSubscription();
     }
 
-    private long doTransferFluids(long platformTransferLimit) {
-        var adjacentFluidTransfer = getAdjacentFluidTransfer();
-        var ownFluidTransfer = getOwnFluidTransfer();
+    private int doTransferFluids(int platformTransferLimit) {
+        var afh = getAdjacentFluidHandler();
+        var am = afh instanceof IFluidHandlerModifiable modifiable ? modifiable: new ModifiableFluidHandlerWrapper(afh);
+        var ownfh = getOwnFluidHandler();
 
-        if (adjacentFluidTransfer != null && ownFluidTransfer != null) {
+        if (afh != null && ownfh != null) {
             return switch (io) {
-                case IN -> doTransferFluidsInternal(adjacentFluidTransfer, ownFluidTransfer, platformTransferLimit);
-                case OUT -> doTransferFluidsInternal(ownFluidTransfer, adjacentFluidTransfer, platformTransferLimit);
-                default -> 0L;
+                case IN -> doTransferFluidsInternal(am, ownfh, platformTransferLimit);
+                case OUT -> doTransferFluidsInternal(ownfh, am, platformTransferLimit);
+                default -> 0;
             };
         }
         return 0;
 
     }
 
-    protected long doTransferFluidsInternal(IFluidTransfer source, IFluidTransfer destination, long platformTransferLimit) {
+    protected int doTransferFluidsInternal(IFluidHandlerModifiable source, IFluidHandlerModifiable destination, int platformTransferLimit) {
         return transferAny(source, destination, platformTransferLimit);
     }
 
-    protected long transferAny(IFluidTransfer source, IFluidTransfer destination, long platformTransferLimit) {
-        return FluidTransferHelper.transferFluids(source, destination, platformTransferLimit, filterHandler.getFilter());
+    protected int transferAny(IFluidHandlerModifiable source, IFluidHandlerModifiable destination, int platformTransferLimit) {
+        return GTTransferUtils.transferFluidsFiltered(source, destination, filterHandler.getFilter(), platformTransferLimit);
     }
 
 
@@ -247,18 +250,20 @@ public class PumpCoverExt extends CoverBehavior implements IUICover, IControllab
         EXTRACT
     }
 
-    protected Map<FluidStack, Long> enumerateDistinctFluids(IFluidTransfer fluidTransfer, TransferDirection direction) {
-        final Map<FluidStack, Long> summedFluids = new Object2LongOpenCustomHashMap<>(FluidStackHashStrategy.comparingAllButAmount());
+    protected Map<FluidStack, Integer> enumerateDistinctFluids(IFluidHandlerModifiable fluidHandler, TransferDirection direction) {
+        final Map<FluidStack, Integer> summedFluids = new Object2IntOpenCustomHashMap<>(
+                FluidStackHashStrategy.comparingAllButAmount()
+        );
 
-        for (int tank = 0; tank < fluidTransfer.getTanks(); tank++) {
-            if (!canTransfer(fluidTransfer, direction, tank))
+        for (int tank = 0; tank < fluidHandler.getTanks(); tank++) {
+            if (!canTransfer(fluidHandler, direction, tank))
                 continue;
 
-            FluidStack fluidStack = fluidTransfer.getFluidInTank(tank);
+            FluidStack fluidStack = fluidHandler.getFluidInTank(tank);
             if (fluidStack.isEmpty())
                 continue;
 
-            summedFluids.putIfAbsent(fluidStack, 0L);
+            summedFluids.putIfAbsent(fluidStack, 0);
             summedFluids.computeIfPresent(fluidStack, (stack, totalAmount) -> {
                 return totalAmount + stack.getAmount();
             });
@@ -267,10 +272,10 @@ public class PumpCoverExt extends CoverBehavior implements IUICover, IControllab
         return summedFluids;
     }
 
-    private static boolean canTransfer(IFluidTransfer fluidTransfer, TransferDirection direction, int tank) {
+    private static boolean canTransfer(IFluidHandlerModifiable fluidHandler, TransferDirection direction, int tank) {
         return switch (direction) {
-            case INSERT -> fluidTransfer.supportsFill(tank);
-            case EXTRACT -> fluidTransfer.supportsDrain(tank);
+            case INSERT -> fluidHandler.supportsFill(tank);
+            case EXTRACT -> fluidHandler.supportsDrain(tank);
         };
     }
 
@@ -282,10 +287,11 @@ public class PumpCoverExt extends CoverBehavior implements IUICover, IControllab
     @Override
     public Widget createUIWidget() {
         final var group = new WidgetGroup(0, 0, 176, 137);
-        group.addWidget(new LabelWidget(10, 5, LocalizationUtils.format(getUITitle(), GTValues.VN[tier])));
+        group.addWidget(new LabelWidget(10, 5, Component.translatable(getUITitle(), GTValues.VN[tier])));
 
-        transferRateWidget = new LongInputWidget(10, 20, 134, 20,
-                this::getCurrentBucketModeTransferRate, this::setCurrentBucketModeTransferRate).setMin(0L);
+        transferRateWidget = new IntInputWidget(10, 20, 134, 20,
+                this::getCurrentBucketModeTransferRate,
+                this::setCurrentBucketModeTransferRate).setMin(0);
         setBucketMode(this.bucketMode); // initial input widget config happens here
         group.addWidget(transferRateWidget);
 
@@ -315,11 +321,11 @@ public class PumpCoverExt extends CoverBehavior implements IUICover, IControllab
         );
     }
 
-    private long getCurrentBucketModeTransferRate() {
+    private int getCurrentBucketModeTransferRate() {
         return this.currentMilliBucketsPerTick / this.bucketMode.multiplier;
     }
 
-    private void setCurrentBucketModeTransferRate(long transferRate) {
+    private void setCurrentBucketModeTransferRate(int transferRate) {
         this.setTransferRate(transferRate * this.bucketMode.multiplier);
     }
 
@@ -337,50 +343,48 @@ public class PumpCoverExt extends CoverBehavior implements IUICover, IControllab
     }
 
 
-    /////////////////////////////////////
-    //***    CAPABILITY OVERRIDE    ***//
-    /////////////////////////////////////
+    // Capability Override
 
-    private CoverableFluidTransferWrapper fluidTransferWrapper;
+    private CoverableFluidHandlerWrapper fluidHandlerWrapper;
 
     @Nullable
     @Override
-    public IFluidTransfer getFluidTransferCap(@Nullable IFluidTransfer defaultValue) {
+    public IFluidHandlerModifiable getFluidHandlerCap(@Nullable IFluidHandlerModifiable defaultValue) {
         if (defaultValue == null) {
             return null;
         }
-        if (fluidTransferWrapper == null || fluidTransferWrapper.delegate != defaultValue) {
-            this.fluidTransferWrapper = new CoverableFluidTransferWrapper(defaultValue);
+        if (fluidHandlerWrapper == null || fluidHandlerWrapper.delegate != defaultValue) {
+            this.fluidHandlerWrapper = new CoverableFluidHandlerWrapper(defaultValue);
         }
-        return fluidTransferWrapper;
+        return fluidHandlerWrapper;
     }
 
-    private class CoverableFluidTransferWrapper extends FluidTransferDelegate {
+    private class CoverableFluidHandlerWrapper extends FluidHandlerDelegate {
 
-        public CoverableFluidTransferWrapper(IFluidTransfer delegate) {
+        public CoverableFluidHandlerWrapper(IFluidHandlerModifiable delegate) {
             super(delegate);
         }
 
         @Override
-        public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
+        public int fill(FluidStack resource, FluidAction action) {
             if (io == IO.OUT && manualIOMode == ManualIOMode.DISABLED) {
                 return 0;
             }
             if (!filterHandler.test(resource) && manualIOMode == ManualIOMode.FILTERED) {
                 return 0;
             }
-            return super.fill(tank, resource, simulate, notifyChanges);
+            return super.fill(resource, action);
         }
 
         @Override
-        public FluidStack drain(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
+        public FluidStack drain(FluidStack resource, FluidAction action) {
             if (io == IO.IN && manualIOMode == ManualIOMode.DISABLED) {
-                return FluidStack.empty();
+                return FluidStack.EMPTY;
             }
             if (manualIOMode == ManualIOMode.FILTERED && !filterHandler.test(resource)) {
-                return FluidStack.empty();
+                return FluidStack.EMPTY;
             }
-            return super.drain(tank, resource, simulate, notifyChanges);
+            return super.drain(resource, action);
         }
     }
 }
