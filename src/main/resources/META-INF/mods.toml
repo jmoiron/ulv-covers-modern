@@ -53,6 +53,6 @@ description='''ULV Covers Modern'''
 [[dependencies.ulvcovm]]
     modId = "gtceu"
     mandatory = true
-    versionRange = "[1.0.16,)"
+    versionRange = "[1.5.0,)"
     ordering = "AFTER"
     side = "BOTH"

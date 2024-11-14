@@ -26,10 +26,12 @@ import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerDelegate;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.transfer.fluid.ModifiableFluidHandlerWrapper;
+import com.gregtechceu.gtceu.common.cover.PumpCover;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.utils.FluidStackHashStrategy;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
+
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -37,6 +39,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
 import lombok.Getter;
@@ -287,7 +290,8 @@ public class PumpCoverExt extends CoverBehavior implements IUICover, IControllab
     @Override
     public Widget createUIWidget() {
         final var group = new WidgetGroup(0, 0, 176, 137);
-        group.addWidget(new LabelWidget(10, 5, Component.translatable(getUITitle(), GTValues.VN[tier])));
+
+        group.addWidget(new LabelWidget(10, 5, LocalizationUtils.format(getUITitle(), GTValues.VN[tier])));
 
         transferRateWidget = new IntInputWidget(10, 20, 134, 20,
                 this::getCurrentBucketModeTransferRate,
@@ -298,8 +302,7 @@ public class PumpCoverExt extends CoverBehavior implements IUICover, IControllab
         group.addWidget(new EnumSelectorWidget<>(
                 146, 20, 20, 20,
                 Arrays.stream(BucketMode.values()).filter(m -> m.multiplier <= maxMilliBucketsPerTick).toList(),
-                bucketMode, this::setBucketMode
-        ).setTooltipSupplier(this::getBucketModeTooltip));
+                bucketMode, this::setBucketMode).setTooltipSupplier(this::getBucketModeTooltip));
 
         group.addWidget(new EnumSelectorWidget<>(10, 45, 20, 20, List.of(IO.IN, IO.OUT), io, this::setIo));
 
@@ -317,8 +320,7 @@ public class PumpCoverExt extends CoverBehavior implements IUICover, IControllab
 
     private List<Component> getBucketModeTooltip(BucketMode mode, String langKey) {
         return List.of(
-                Component.translatable(langKey).append(Component.translatable("gtceu.gui.content.units.per_tick"))
-        );
+                Component.translatable(langKey).append(Component.translatable("gtceu.gui.content.units.per_tick")));
     }
 
     private int getCurrentBucketModeTransferRate() {
