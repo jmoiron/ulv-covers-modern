@@ -19,7 +19,7 @@ public class CoverItems {
 
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_ULV = UCMRegistries.REGISTRATE.item("ulv_electric_pump", ComponentItem::create)
             .lang("ULV Electric Pump")
-            .onRegister(attach(new CoverPlaceBehavior(Covers.ULV_PUMP.definition)))
+            .onRegister(attach(new CoverPlaceBehavior(Covers.ULV_PUMP)))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", (1280/2) / 20));
@@ -28,7 +28,7 @@ public class CoverItems {
     
     public static ItemEntry<ComponentItem> CONVEYOR_MODULE_ULV = UCMRegistries.REGISTRATE.item("ulv_conveyor_module", ComponentItem::create)
             .lang("ULV Conveyor Module")
-            .onRegister(attach(new CoverPlaceBehavior(Covers.ULV_CONVEYOR.definition)))
+            .onRegister(attach(new CoverPlaceBehavior(Covers.ULV_CONVEYOR)))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 2));
@@ -37,7 +37,7 @@ public class CoverItems {
 
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_ULV = UCMRegistries.REGISTRATE.item("ulv_fluid_regulator", ComponentItem::create)
             .lang("ULV Fluid Regulator")
-            .onRegister(attach(new CoverPlaceBehavior(Covers.ULV_FLUID_REGULATOR.definition)))
+            .onRegister(attach(new CoverPlaceBehavior(Covers.ULV_FLUID_REGULATOR)))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", (1280/2) / 20));
@@ -46,7 +46,7 @@ public class CoverItems {
     
     public static ItemEntry<ComponentItem> ROBOT_ARM_ULV = UCMRegistries.REGISTRATE.item("ulv_robot_arm", ComponentItem::create)
             .lang("ULV Robot Arm")
-            .onRegister(attach(new CoverPlaceBehavior(Covers.ULV_ROBOT_ARM.definition)))
+            .onRegister(attach(new CoverPlaceBehavior(Covers.ULV_ROBOT_ARM)))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 2));

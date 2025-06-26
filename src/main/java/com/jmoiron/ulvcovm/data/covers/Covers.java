@@ -2,61 +2,60 @@ package com.jmoiron.ulvcovm.data.covers;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.cover.*;
 import com.jmoiron.ulvcovm.UCMCore;
 import com.gregtechceu.gtceu.client.renderer.cover.*;
 
-import net.minecraft.resources.ResourceLocation;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Covers {
 
-    public static class CoverInfo {
-        public ResourceLocation id;
-        public CoverDefinition definition;
+    public static final List<CoverDefinition> ALL_COVERS = new ArrayList<>(4);
 
-        CoverInfo(String id, CoverDefinition.TieredCoverBehaviourProvider behavior, ICoverRenderer renderer) {
-            this.id = UCMCore.id(id);
-            this.definition = register(id, behavior, renderer);
-        }
-    };
-
-    public static CoverInfo ULV_CONVEYOR = new CoverInfo(
+    public static CoverDefinition ULV_CONVEYOR = registerULV(
         "conveyor",
         ConveyorCover::new,
         ConveyorCoverRenderer.INSTANCE
-        // new SimpleCoverRenderer(new ResourceLocation("gtceu:block/cover/overlay_conveyor"))
     );
 
-    public static CoverInfo ULV_PUMP = new CoverInfo(
+    public static CoverDefinition ULV_PUMP = register(
         "pump",
-        PumpCoverExt::new,
-        PumpCoverRendererExt.INSTANCE
-        //new SimpleCoverRenderer(new ResourceLocation("gtceu:block/cover/overlay_pump"))
+        (def, cov, side) -> new PumpCover(def, cov, side, GTValues.ULV, 32),
+        PumpCoverRenderer.INSTANCE
     );
 
-    public static CoverInfo ULV_ROBOT_ARM = new CoverInfo(
+    public static CoverDefinition ULV_ROBOT_ARM = registerULV(
         "robot_arm",
         RobotArmCover::new,
         RobotArmCoverRenderer.INSTANCE
     );
 
-    public static CoverInfo ULV_FLUID_REGULATOR = new CoverInfo(
+    public static CoverDefinition ULV_FLUID_REGULATOR = register(
         "fluid_regulator",
-        FluidRegulatorCoverExt::new,
-        PumpCoverRendererExt.INSTANCE
+        (def, cov, side) -> new FluidRegulatorCover(def, cov, side, GTValues.ULV, 32),
+        FluidRegulatorCoverRenderer.INSTANCE
     );
 
-
-    public static CoverDefinition register(
+    public static CoverDefinition registerULV(
             String id,
             CoverDefinition.TieredCoverBehaviourProvider behavior,
             ICoverRenderer renderer
-        ) {
-        var definition = new CoverDefinition(UCMCore.id(id),
-            (def, coverable, side) -> behavior.create(def, coverable, side, GTValues.ULV),
-            renderer);
+    ) {
+        return register(
+                id,
+                (def, cov, side) -> behavior.create(def, cov, side, GTValues.ULV),
+                renderer);
+    }
 
+    public static CoverDefinition register(
+            String id,
+            CoverDefinition.CoverBehaviourProvider behavior,
+            ICoverRenderer renderer
+        ) {
+
+        var definition = new CoverDefinition(UCMCore.id(id), behavior, renderer);
+        ALL_COVERS.add(definition);
         return definition;
     }
 }
