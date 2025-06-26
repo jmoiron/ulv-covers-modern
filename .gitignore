@@ -6,6 +6,7 @@ bin
 .classpath
 .project
 .cache
+.vscode
 
 # idea
 out
