@@ -84,7 +84,7 @@ repositories {
         url = 'https://maven.parchmentmc.org'
     }
     maven {
-        url "https://maven.saps.dev/releases/"
+        url "https://maven.latvian.dev/releases/"
         content {
             includeGroup "dev.latvian.mods"
         }
